@@ -1,0 +1,134 @@
+backend:
+  name: turbo-github
+  # Replace with the UUID shown on this site's Overview page in Decap Turbo.
+  # This placeholder is intentionally invalid; login and repository operations are unavailable until setup.
+  turbo_site_id: REPLACE_WITH_TURBO_SITE_ID
+
+# The publication branch is intentionally not set here. Turbo's site configuration is authoritative.
+publish_mode: editorial_workflow
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: projects
+    label: Projects
+    label_singular: Project
+    description: Engineering initiatives. Public listing requires PUBLIC visibility and a non-archived status.
+    folder: content/projects
+    create: true
+    extension: json
+    format: json
+    identifier_field: title
+    slug: "{{fields.slug}}"
+    summary: "{{title}} ({{slug}}) — {{status}} / {{visibility}}"
+    fields:
+      - { label: Stable ID, name: id, widget: string, hint: Keep this identifier stable; do not reuse it for another project. }
+      - { label: Slug, name: slug, widget: string, pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Use lowercase letters, numbers, and single hyphens. This value is also the filename stem.'], hint: The file will be saved as this value plus .json. }
+      - { label: Title, name: title, widget: string }
+      - { label: Summary, name: summary, widget: text }
+      - { label: Description, name: description, widget: text }
+      - label: Capability
+        name: category
+        widget: select
+        options: [software-engineering, ai-engineering, digital-automation, product-engineering]
+      - label: Lifecycle status
+        name: status
+        widget: select
+        options: [PLANNING, IN_PROGRESS, MVP, COMPLETED, MAINTENANCE, ARCHIVED]
+        hint: Project lifecycle, not CMS editorial state. ARCHIVED projects are excluded from public routes.
+      - label: Audience visibility
+        name: visibility
+        widget: select
+        options: [PUBLIC, PRIVATE, INTERNAL]
+      - { label: Technologies, name: technologies, widget: list, default: [] }
+      - { label: Featured, name: featured, widget: boolean, default: false }
+      - label: Gallery images
+        name: images
+        widget: list
+        default: []
+        fields:
+          - { label: Source path or URL, name: src, widget: string }
+          - { label: Alternative text, name: alt, widget: string }
+          - { label: Width in pixels, name: width, widget: optional-number, required: false }
+          - { label: Height in pixels, name: height, widget: optional-number, required: false }
+      - label: Thumbnail
+        name: thumbnail
+        widget: optional-image-asset
+        required: false
+      - { label: Repository URL, name: repositoryUrl, widget: optional-string, required: false }
+      - { label: Live URL, name: liveUrl, widget: optional-string, required: false }
+      - { label: Start date, name: startDate, widget: datetime, format: 'YYYY-MM-DDTHH:mm:ss[Z]', picker_utc: true }
+      - { label: Completion date, name: completionDate, widget: optional-datetime, required: false }
+      - { label: Problem, name: problem, widget: optional-text, required: false }
+      - { label: Solution, name: solution, widget: optional-text, required: false }
+      - { label: Outcome, name: outcome, widget: optional-text, required: false }
+      - { label: Created at, name: createdAt, widget: datetime, format: 'YYYY-MM-DDTHH:mm:ss[Z]', picker_utc: true }
+      - { label: Updated at, name: updatedAt, widget: datetime, format: 'YYYY-MM-DDTHH:mm:ss[Z]', picker_utc: true, hint: Update this authored timestamp when changing project content. }
+
+  - name: products
+    label: Products
+    label_singular: Product
+    description: Reusable products with independent lifecycle and audience visibility.
+    folder: content/products
+    create: true
+    extension: json
+    format: json
+    identifier_field: name
+    slug: "{{fields.slug}}"
+    summary: "{{name}} ({{slug}}) — {{status}} / {{visibility}}"
+    fields:
+      - { label: Stable ID, name: id, widget: string, hint: Keep this identifier stable; do not reuse it for another product. }
+      - { label: Slug, name: slug, widget: string, pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Use lowercase letters, numbers, and single hyphens. This value is also the filename stem.'] }
+      - { label: Name, name: name, widget: string }
+      - { label: Tagline, name: tagline, widget: text }
+      - { label: Description, name: description, widget: text }
+      - label: Lifecycle status
+        name: status
+        widget: select
+        options: [CONCEPT, DEVELOPMENT, BETA, LIVE, MAINTENANCE, RETIRED]
+        hint: Public listing requires DEVELOPMENT, BETA, LIVE, or MAINTENANCE and PUBLIC visibility.
+      - label: Audience visibility
+        name: visibility
+        widget: select
+        options: [PUBLIC, PRIVATE, INTERNAL]
+      - { label: Featured, name: featured, widget: boolean, default: false }
+      - { label: Features, name: features, widget: list, default: [] }
+      - label: Product image
+        name: image
+        widget: optional-image-asset
+        required: false
+      - { label: Product URL, name: url, widget: optional-string, required: false }
+      - { label: Origin project ID, name: originProjectId, widget: optional-string, required: false, hint: Optional reference by the existing project's stable ID. }
+      - { label: Created at, name: createdAt, widget: datetime, format: 'YYYY-MM-DDTHH:mm:ss[Z]', picker_utc: true }
+      - { label: Updated at, name: updatedAt, widget: datetime, format: 'YYYY-MM-DDTHH:mm:ss[Z]', picker_utc: true, hint: Update this authored timestamp when changing product content. }
+
+  - name: insights
+    label: Insights
+    label_singular: Insight
+    description: Plain-text articles. Publication requires PUBLISHED status and a publication date.
+    folder: content/insights
+    create: true
+    extension: json
+    format: json
+    identifier_field: title
+    slug: "{{fields.slug}}"
+    summary: "{{title}} ({{slug}}) — {{status}}"
+    fields:
+      - { label: Stable ID, name: id, widget: string, hint: Keep this identifier stable; do not reuse it for another insight. }
+      - { label: Slug, name: slug, widget: string, pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Use lowercase letters, numbers, and single hyphens. This value is also the filename stem.'] }
+      - { label: Title, name: title, widget: string }
+      - { label: Summary, name: summary, widget: text }
+      - { label: Body, name: body, widget: text, hint: Plain text only. This field is not Markdown or rich text. }
+      - { label: Tags, name: tags, widget: list, default: [] }
+      - label: Content status
+        name: status
+        widget: select
+        options: [DRAFT, PUBLISHED]
+        hint: Public only when PUBLISHED and publishedAt is present. This is separate from a CMS editorial draft.
+      - { label: Published at, name: publishedAt, widget: optional-datetime, required: false, hint: Required by repository validation when status is PUBLISHED. }
+      - label: Cover image
+        name: coverImage
+        widget: optional-image-asset
+        required: false
+      - { label: Updated at, name: updatedAt, widget: datetime, format: 'YYYY-MM-DDTHH:mm:ss[Z]', picker_utc: true, hint: Update this authored timestamp when changing insight content. }
+

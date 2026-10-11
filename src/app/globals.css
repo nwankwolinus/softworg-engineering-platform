@@ -1,0 +1,345 @@
+@import "tailwindcss";
+
+/* =============================================================================
+   Softworg design system: tokens and foundations only. No page-specific styling.
+
+   Layers
+   1. Primitives  (:root)            raw brand values, never used directly by components
+   2. Semantic    (:root)            what components consume; a future theme overrides these
+   3. Tailwind    (@theme blocks)    exposes the tokens as utilities (bg-surface, text-h2, ...)
+   Components use semantic utilities only. No raw hex, no arbitrary values.
+   ========================================================================== */
+
+/* ---- 1 + 2. Colour: primitives and semantic roles (dark-first) ------------ */
+:root {
+  color-scheme: dark;
+
+  /* Primitives: the Softworg brand palette. */
+  --brand-navy: #050816;
+  --brand-cyan: #00d9ff;
+  --brand-blue: #0086ff;
+  --brand-violet: #6338f5;
+  --brand-magenta: #e000f5;
+  --brand-lime: #c9ff57;
+
+  /* Semantic: structure */
+  --background: var(--brand-navy);
+  --foreground: #ffffff;
+  --muted-foreground: #a7b0c0;
+  --surface: #0a1024;
+  --surface-elevated: #111a35;
+  --border: #1c2640;
+  --border-strong: #2a3757;
+  --border-input: #68758f; /* form control edges need stronger contrast than decorative borders */
+
+  /* Semantic: interaction. Cyan is the primary interactive colour. */
+  --primary: var(--brand-cyan);
+  --primary-hover: #4de6ff;
+  --primary-active: #00b8d9;
+  --primary-foreground: var(--brand-navy);
+  --focus: #7de9ff;
+
+  /* Semantic: secondary accent. Violet is for emphasis and depth, never body text. */
+  --accent: var(--brand-violet);
+  --accent-foreground: #ffffff;
+
+  /* Semantic: status. Always paired with text or an icon, never colour alone. */
+  --success: #34d399;
+  --warning: #fbbf24;
+  --error: #f87171;
+  --status-foreground: var(--brand-navy);
+
+  /* Layout rhythm: responsive, so components never branch on breakpoint for spacing. */
+  --section-y: 3.5rem;
+  --gutter: 1rem;
+
+  /* Motion */
+  --duration-fast: 120ms;
+  --duration-standard: 200ms;
+  --duration-slow: 400ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --section-y: 5rem;
+    --gutter: 1.5rem;
+  }
+}
+
+@media (min-width: 80rem) {
+  :root {
+    --section-y: 6rem;
+    --gutter: 2rem;
+  }
+}
+
+/* ---- 3a. Tailwind: values that reference runtime variables ---------------- */
+@theme inline {
+  --color-*: initial;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-border-input: var(--border-input);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-focus: var(--focus);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-status-foreground: var(--status-foreground);
+
+  /* Fallbacks keep this valid where the next/font variable is absent (e.g. global-error). */
+  --font-sans: var(--font-inter, ui-sans-serif), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+
+  --spacing-section: var(--section-y);
+  --spacing-gutter: var(--gutter);
+}
+
+/* ---- 3b. Tailwind: concrete scales (emitted always so base styles can use them) */
+@theme static {
+  /* Breakpoints (mobile-first): xs large mobile, sm/md tablet, lg laptop, xl desktop, 2xl large desktop.
+     Small mobile (~360px) is the unprefixed baseline. */
+  --breakpoint-xs: 30rem;
+
+  /* Content widths */
+  --container-narrow: 46rem;
+  --container-page: 72rem;
+  --container-wide: 80rem;
+
+  /* Typography scale. Fluid sizes use clamp(); line-height, tracking and weight travel with the size. */
+  --text-*: initial;
+  --text-display: clamp(2.5rem, 1.9rem + 3vw, 4.5rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.03em;
+  --text-display--font-weight: 700;
+  --text-h1: clamp(2rem, 1.6rem + 2vw, 3.25rem);
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.025em;
+  --text-h1--font-weight: 700;
+  --text-h2: clamp(1.625rem, 1.4rem + 1.1vw, 2.25rem);
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h2--font-weight: 600;
+  --text-h3: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --text-h3--line-height: 1.3;
+  --text-h3--letter-spacing: -0.01em;
+  --text-h3--font-weight: 600;
+  --text-h4: 1.125rem;
+  --text-h4--line-height: 1.4;
+  --text-h4--font-weight: 600;
+  --text-body-lg: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --text-body-lg--line-height: 1.6;
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.5;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.4;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.25;
+  --text-label--font-weight: 500;
+
+  /* Radius */
+  --radius-*: initial;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-pill: 9999px;
+
+  /* Shadows: restrained. shadow-glow is for the rare featured surface, not a default. */
+  --shadow-*: initial;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-md: 0 6px 20px -6px rgb(0 0 0 / 0.55);
+  --shadow-lg: 0 16px 40px -12px rgb(0 0 0 / 0.65);
+  --shadow-glow: 0 0 0 1px rgb(0 217 255 / 0.25), 0 12px 36px -12px rgb(0 134 255 / 0.4);
+}
+
+/* ---- Foundations ---------------------------------------------------------- */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem; /* clears the sticky header for in-page anchors */
+  }
+
+  body {
+    @apply bg-background font-sans text-body text-foreground antialiased;
+    text-rendering: optimizeLegibility;
+    background-image:
+      radial-gradient(ellipse 70rem 38rem at 82% -10rem, rgb(0 134 255 / 0.13), transparent 70%),
+      radial-gradient(ellipse 44rem 30rem at -15rem 34rem, rgb(99 56 245 / 0.09), transparent 72%);
+    background-attachment: fixed;
+  }
+
+  a {
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.2em;
+  }
+
+  h1 {
+    @apply text-h1 text-balance;
+  }
+  h2 {
+    @apply text-h2 text-balance;
+  }
+  h3 {
+    @apply text-h3 text-balance;
+  }
+  h4 {
+    @apply text-h4 text-balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--primary) 35%, transparent);
+    color: var(--foreground);
+  }
+
+  /* One visible focus treatment for every interactive element. Components must not remove it
+     without providing an equivalent (see the linked Card). */
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+}
+
+/* Page-level motion is enabled only after hydration and only for elements observed by the
+   IntersectionObserver. Without JavaScript, content remains visible. */
+body.motion-ready [data-motion="reveal"][data-motion-state="hidden"] {
+  opacity: 0;
+  transform: translateY(1.25rem);
+}
+
+body.motion-ready [data-motion="reveal"][data-motion-state="visible"] {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 650ms cubic-bezier(0.2, 0.7, 0.2, 1), transform 650ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+[data-hero-copy] > * {
+  animation: hero-rise 750ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+[data-hero-copy] > :nth-child(2) { animation-delay: 80ms; }
+[data-hero-copy] > :nth-child(3) { animation-delay: 150ms; }
+[data-hero-copy] > :nth-child(4) { animation-delay: 220ms; }
+
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(1rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hero-drift {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-9px) rotate(1deg); }
+}
+
+@keyframes hero-pulse {
+  0%, 100% { opacity: 0.45; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes hero-dash {
+  to { stroke-dashoffset: -48; }
+}
+
+.home-hero {
+  border-bottom-color: color-mix(in srgb, var(--brand-cyan) 22%, var(--border));
+  background-image: linear-gradient(115deg, rgb(5 8 22 / 0.9), rgb(5 8 22 / 0.48) 60%, rgb(5 8 22 / 0.12));
+}
+
+.hero-visual-wrap {
+  position: relative;
+  isolation: isolate;
+  animation: hero-rise 900ms 120ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.hero-visual-wrap::before {
+  position: absolute;
+  z-index: -1;
+  inset: 15%;
+  border-radius: 50%;
+  background: rgb(0 134 255 / 0.23);
+  filter: blur(70px);
+  content: "";
+}
+
+.hero-visual-drift { transform-box: fill-box; transform-origin: center; animation: hero-drift 8s ease-in-out infinite; }
+.hero-visual-pulse { transform-box: fill-box; transform-origin: center; animation: hero-pulse 2.8s ease-in-out infinite; }
+.hero-visual-dash { stroke-dasharray: 5 9; animation: hero-dash 4s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-hero-copy] > *, .hero-visual-wrap, .hero-visual-drift, .hero-visual-pulse, .hero-visual-dash {
+    animation: none !important;
+  }
+  body.motion-ready [data-motion="reveal"][data-motion-state="hidden"] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- Visual language utilities (decorative, always aria-hidden at the call site) */
+@utility bg-brand-gradient {
+  background-image: linear-gradient(
+    90deg,
+    var(--brand-cyan),
+    var(--brand-blue),
+    var(--brand-violet),
+    var(--brand-magenta)
+  );
+}
+
+/* Faint technical grid, fading out away from its anchor. */
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--foreground) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--foreground) 5%, transparent) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+  mask-image: radial-gradient(ellipse 70% 100% at 50% 0%, #000 0%, transparent 75%);
+}
+
+/* Controlled accent illumination: one soft blue and one soft violet wash, top edge only. */
+@utility bg-glow {
+  background-image:
+    radial-gradient(50% 80% at 85% 0%, color-mix(in srgb, var(--brand-violet) 22%, transparent), transparent 70%),
+    radial-gradient(40% 70% at 10% 0%, color-mix(in srgb, var(--brand-blue) 16%, transparent), transparent 70%);
+}
+
+/* ---- Motion: three durations. Pick by intent, not by taste. ---------------- */
+@utility motion-fast {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-standard);
+}
+@utility motion-standard {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+  transition-duration: var(--duration-standard);
+  transition-timing-function: var(--ease-standard);
+}
+@utility motion-slow {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+  transition-duration: var(--duration-slow);
+  transition-timing-function: var(--ease-standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
